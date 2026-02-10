@@ -14,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   
   //Tempo maximo de execução de cada teste completo
-  timeout: 30000,
+  timeout: 60000,
 
   //Tempo maximo para cada asserção individual
   expect: {
@@ -39,6 +39,12 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    // tempo maximo para ações de interação com a pagina como click e fill
+    actionTimeout: 5000,
+
+    // tempo maximo para navegação entre paginas como goto e waitforurl
+    navigationTimeout: 10000,
   },
 
   /* Configure projects for major browsers */
