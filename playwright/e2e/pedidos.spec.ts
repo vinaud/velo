@@ -41,5 +41,11 @@ test('Deve exibir mensagem de erro para um pedido não encontrado', async ({ pag
   const mensagem = page.locator('p', {hasText: 'Verifique o número do pedido e tente novamente'})
   await expect(mensagem).toBeVisible()
 
+  await expect(page.locator('#root')).toMatchAriaSnapshot(`
+    - img
+    - heading "Pedido não encontrado" [level=3]
+    - paragraph: Verifique o número do pedido e tente novamente
+    `)
+
 });
 
