@@ -13,9 +13,10 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(pedido); 
   await page.getByRole('button', { name: 'Buscar Pedido' }).click();
 
-  await expect(page.locator(`text=${pedido}`)).toBeVisible();
-  await expect(page.locator(`text=${pedido}`)).toContainText(pedido);
-
+ 
+  const containerPedido = page.getByRole('paragraph').filter({ hasText: /^Pedido$/ }).locator('..');
+  await expect(containerPedido).toContainText(pedido);
+ 
   await expect(page.locator('text=APROVADO')).toBeVisible();
-  await expect(page.locator('text=APROVADO')).toContainText('APROVADO');
+
 });
