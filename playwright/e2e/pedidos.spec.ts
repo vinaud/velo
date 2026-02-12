@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { gerarCodigoPedido } from '../support/helpers';
 
 test('Deve consultar um pedido aprovado', async ({ page }) => {
 
@@ -23,7 +24,7 @@ test('Deve consultar um pedido aprovado', async ({ page }) => {
 
 test('Deve exibir mensagem de erro para um pedido não encontrado', async ({ page }) => {
 
-  const pedido = 'VLO-ABC123';
+  const pedido = gerarCodigoPedido()
   await page.goto('http://localhost:5173/');
 
   await expect(page.getByTestId('hero-section').getByRole('heading')).toContainText('Velô Sprint');
