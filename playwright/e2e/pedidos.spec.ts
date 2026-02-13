@@ -33,9 +33,19 @@ test.describe('Consulta de pedido', () =>{
 
   test('Deve consultar um pedido aprovado', async ({ page }) => {
 
-    const pedido = 'VLO-H8LZEN';
+    const pedido = {
+      numero: 'VLO-H8LZEN',
+      status: 'APROVADO',
+      cor: 'Glacier Blue',
+      roda: 'aero Wheels',
+      cliente: {
+        nome:  'Vinaud Vinaud',
+        email: 'email@qa.com'
+      },
+      pagamento: 'À Vista'
+    }
   
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(pedido); 
+    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(pedido.numero); 
     await page.getByRole('button', { name: 'Buscar Pedido' }).click();
   
    
@@ -44,36 +54,82 @@ test.describe('Consulta de pedido', () =>{
    
   // await expect(page.locator('text=APROVADO')).toBeVisible();
 
-  await expect(page.getByTestId(`order-result-${pedido}`)).toMatchAriaSnapshot(`
+  await expect(page.getByTestId(`order-result-${pedido.numero}`)).toMatchAriaSnapshot(`
     - img
     - paragraph: Pedido
-    - paragraph: ${pedido}
+    - paragraph: ${pedido.numero}
     - img
-    - text: APROVADO
+    - text: ${pedido.status}
     - img "Velô Sprint"
     - paragraph: Modelo
     - paragraph: Velô Sprint
     - paragraph: Cor
-    - paragraph: Glacier Blue
+    - paragraph: ${pedido.cor}
     - paragraph: Interior
     - paragraph: cream
     - paragraph: Rodas
-    - paragraph: aero Wheels
+    - paragraph: ${pedido.roda}
     - heading "Dados do Cliente" [level=4]
     - paragraph: Nome
-    - paragraph: Vinaud Vinaud
+    - paragraph: ${pedido.cliente.nome}
     - paragraph: Email
-    - paragraph: email@qa.com
+    - paragraph: ${pedido.cliente.email}
     - paragraph: Loja de Retirada
     - paragraph
     - paragraph: Data do Pedido
     - paragraph: /\\d+\\/\\d+\\/\\d+/
     - heading "Pagamento" [level=4]
-    - paragraph: À Vista
+    - paragraph: ${pedido.pagamento}
     - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
     `);
+})
+
+  test('Deve consultar um pedido reprovado', async ({ page }) => {
+    
+    const pedido = {
+      numero: 'VLO-PV70I4',
+      status: 'REPROVADO',
+      cor: 'Glacier Blue',
+      roda: 'aero Wheels',
+      cliente: {
+        nome:  'Sakurai Masahiro',
+        email: 'qa@dev.com'
+      },
+      pagamento: 'À Vista'
+    }
   
-  });
+    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(pedido.numero); 
+    await page.getByRole('button', { name: 'Buscar Pedido' }).click();
+
+    await expect(page.getByTestId(`order-result-${pedido.numero}`)).toMatchAriaSnapshot(`
+      - img
+      - paragraph: Pedido
+      - paragraph: ${pedido.numero}
+      - img
+      - text: ${pedido.status}
+      - img "Velô Sprint"
+      - paragraph: Modelo
+      - paragraph: Velô Sprint
+      - paragraph: Cor
+      - paragraph: ${pedido.cor}
+      - paragraph: Interior
+      - paragraph: cream
+      - paragraph: Rodas
+      - paragraph: ${pedido.roda}
+      - heading "Dados do Cliente" [level=4]
+      - paragraph: Nome
+      - paragraph: ${pedido.cliente.nome}
+      - paragraph: Email
+      - paragraph: ${pedido.cliente.email}
+      - paragraph: Loja de Retirada
+      - paragraph
+      - paragraph: Data do Pedido
+      - paragraph: /\\d+\\/\\d+\\/\\d+/
+      - heading "Pagamento" [level=4]
+      - paragraph: ${pedido.pagamento}
+      - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
+      `);
+  })
   
   test('Deve exibir mensagem de erro para um pedido não encontrado', async ({ page }) => {
   
