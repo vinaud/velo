@@ -1,13 +1,13 @@
-export function gerarCodigoPedido() {
-    const prefixo = "VLO-";
-    const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let codigo = "";
-  
-    // Gera 6 caracteres aleatórios
-    for (let i = 0; i < 6; i++) {
-      const indice = Math.floor(Math.random() * caracteres.length);
-      codigo += caracteres[indice];
-    }
-  
-    return prefixo + codigo;
+export function generateOrderCode() {
+  const prefix = 'VLO';
+
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let randomPart = '';
+
+  for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      randomPart += chars[randomIndex];
   }
+
+  return `${prefix}-${randomPart}`;
+}
