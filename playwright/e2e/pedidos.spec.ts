@@ -4,6 +4,8 @@ import { generateOrderCode } from '../support/helpers'
 
 import { OrderLockupPage } from '../support/pages/OrderLockupPage'
 
+import { OrderLockupPage } from '../support/pages/OrderLockupPage'
+
 /// AAA - Arrange, Act, Assert
 
 test.describe('Consulta de Pedido', () => {
