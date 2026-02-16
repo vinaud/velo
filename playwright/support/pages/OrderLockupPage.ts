@@ -19,7 +19,7 @@ export class OrderLockupPage {
     async validateStatusBadge(status: OrderStatus) {
         const [bgClass, textClass, iconClass] = this.statusClasses[status]
         const statusBadge = this.page.getByRole('status').filter({ hasText: status })
-
+        
         await expect(statusBadge).toHaveClass(new RegExp(bgClass))
         await expect(statusBadge).toHaveClass(new RegExp(textClass))
         await expect(statusBadge.locator('svg')).toHaveClass(new RegExp(iconClass))

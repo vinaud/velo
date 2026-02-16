@@ -4,8 +4,6 @@ import { generateOrderCode } from '../support/helpers'
 
 import { OrderLockupPage } from '../support/pages/OrderLockupPage'
 
-import { OrderLockupPage } from '../support/pages/OrderLockupPage'
-
 /// AAA - Arrange, Act, Assert
 
 test.describe('Consulta de Pedido', () => {
@@ -23,17 +21,16 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-H8LZEN',
-      status: 'APROVADO',
-      color: 'Glacier Blue',
+      number: 'VLO-Z5R755',
+      status: 'APROVADO' as const,
+      color: 'Lunar White',
       wheels: 'aero Wheels',
       customer: {
-        name: 'Vinaud Vinaud',
-        email: 'email@qa.com'
+        name: 'Fernando Papito',
+        email: 'papito@velo.dev'
       },
       payment: 'À Vista'
     }
-
 
     // Act  
     const orderLockupPage = new OrderLockupPage(page)
@@ -69,7 +66,6 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: ${order.payment}
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
-
 
     // Validação do badge de status encapsulada no Page Object
     await orderLockupPage.validateStatusBadge(order.status)
@@ -81,7 +77,7 @@ test.describe('Consulta de Pedido', () => {
     // Test Data
     const order = {
       number: 'VLO-PV70I4',
-      status: 'REPROVADO',
+      status: 'REPROVADO' as const,
       color: 'Glacier Blue',
       wheels: 'aero Wheels',
       customer: {
@@ -90,7 +86,6 @@ test.describe('Consulta de Pedido', () => {
       },
       payment: 'À Vista'
     }
-
 
     // Act  
     const orderLockupPage = new OrderLockupPage(page)
@@ -126,7 +121,6 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: ${order.payment}
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
-
 
     // Validação do badge de status encapsulada no Page Object
     await orderLockupPage.validateStatusBadge(order.status)
@@ -137,7 +131,7 @@ test.describe('Consulta de Pedido', () => {
     // Test Data
     const order = {
       number: 'VLO-L893TT',
-      status: 'EM_ANALISE',
+      status: 'EM_ANALISE' as const,
       color: 'Glacier Blue',
       wheels: 'aero Wheels',
       customer: {
@@ -146,7 +140,6 @@ test.describe('Consulta de Pedido', () => {
       },
       payment: 'À Vista'
     }
-
 
     // Act  
     const orderLockupPage = new OrderLockupPage(page)
@@ -182,7 +175,6 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: ${order.payment}
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
-
 
     // Validação do badge de status encapsulada no Page Object
     await orderLockupPage.validateStatusBadge(order.status)
