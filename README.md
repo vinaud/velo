@@ -30,13 +30,13 @@ Uma SPA (Single Page Application) que permite:
 
 ```bash
 # Instalar dependências
-yarn install
+npm install
 
 # Rodar em desenvolvimento
-yarn dev
+npm run dev
 ```
 
-Acesse: `http://localhost:5173`
+Acesse: `http://localhost:8080`
 
 ---
 
@@ -65,17 +65,17 @@ VITE_SUPABASE_URL="https://seu_project_id.supabase.co"
 
 ```bash
 # Instalar CLI
-yarn add supabase -D
+npm install -g supabase
 
 # Login e vincular projeto
-yarn supabase login
-yarn supabase link --project-ref hqpnwfjhweprvkjwutvk
+supabase login
+supabase link --project-ref SEU_PROJECT_ID
 
 # Aplicar migrações (cria tabelas e RLS)
-yarn supabase db push
+supabase db push
 
 # Deploy das Edge Functions
-yarn supabase functions deploy
+supabase functions deploy
 ```
 
 Pronto! O banco e as functions estarão configurados.
