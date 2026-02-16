@@ -33,3 +33,4 @@ dist-ssr
 *.zip
 
 playwright-report/index.html
+
