@@ -106,4 +106,16 @@ test.describe('Consulta de Pedido', () => {
     
 
   })
+
+  test('deve exibir mensagem quando o pedido em formato diferente do padrão não é encontrado', async ({ page }) => {
+
+    const order = 'ABC123'
+
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order)
+
+    await orderLockupPage.validateOrdernotFOund()
+    
+
+  })
 })
