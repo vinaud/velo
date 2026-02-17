@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 
 import { generateOrderCode } from '../support/helpers'
 
-import { OrderLockupPage } from '../support/pages/OrderLockupPage'
+import { OrderLockupPage, OrderDetails } from '../support/pages/OrderLockupPage'
 
 /// AAA - Arrange, Act, Assert
 
@@ -20,7 +20,7 @@ test.describe('Consulta de Pedido', () => {
   test('deve consultar um pedido aprovado', async ({ page }) => {
 
     // Test Data
-    const order = {
+    const order: OrderDetails = {
       number: 'VLO-Z5R755',
       status: 'APROVADO' as const,
       color: 'Lunar White',
@@ -46,7 +46,7 @@ test.describe('Consulta de Pedido', () => {
   test('deve consultar um pedido reprovado', async ({ page }) => {
 
     // Test Data
-    const order = {
+    const order: OrderDetails = {
       number: 'VLO-PV70I4',
       status: 'REPROVADO' as const,
       color: 'Glacier Blue',
@@ -72,7 +72,7 @@ test.describe('Consulta de Pedido', () => {
   test('deve consultar um pedido em analise', async ({ page }) => {
 
     // Test Data
-    const order = {
+    const order: OrderDetails = {
       number: 'VLO-L893TT',
       status: 'EM_ANALISE' as const,
       color: 'Glacier Blue',

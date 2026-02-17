@@ -2,6 +2,18 @@ import { Page, expect } from '@playwright/test'
 
 type OrderStatus = 'APROVADO' | 'REPROVADO' | 'EM_ANALISE'
 
+export type OrderDetails= {
+  number: string
+  status: OrderStatus
+  color: string
+  wheels: string
+  customer: {
+    name: string
+    email: string
+  }
+  payment: string
+}
+
 export class OrderLockupPage {
 
     constructor(private page: Page) { }
@@ -38,7 +50,7 @@ export class OrderLockupPage {
       await expect(statusBadge.locator('svg')).toHaveClass(new RegExp(classes.icon))
     }
     
-    async validateOrderDetais(order: any){
+    async validateOrderDetais(order: OrderDetails){
       await expect(this.page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
         - img
         - paragraph: Pedido
