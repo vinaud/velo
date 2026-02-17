@@ -102,12 +102,8 @@ test.describe('Consulta de Pedido', () => {
     const orderLockupPage = new OrderLockupPage(page)
     await orderLockupPage.searchOrder(order)
 
-
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-      - img
-      - heading "Pedido não encontrado" [level=3]
-      - paragraph: Verifique o número do pedido e tente novamente
-      `)
+    await orderLockupPage.validateOrdernotFOund()
+    
 
   })
 })
