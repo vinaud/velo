@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test'
 
 type OrderStatus = 'APROVADO' | 'REPROVADO' | 'EM_ANALISE'
 
-export type OrderDetails= {
+export type OrderDetails = {
   number: string
   status: OrderStatus
   color: string
@@ -14,50 +14,62 @@ export type OrderDetails= {
   payment: string
 }
 
-export class OrderLockupPage {
+export function createOrderLockupActions(page: Page) {
+  return {
+    async open() {
+      await page.goto('/')
+      const title = page.getByTestId('hero-section').getByRole('heading')
+      await expect(title).toContainText('Velô Sprint')
 
-    constructor(private page: Page) { }
-
-    async validatePageLoaded() {
-      await expect(this.page.getByRole('heading')).toContainText('Consultar Pedido')
-      await expect(this.page.getByRole('textbox', { name: 'Número do Pedido' })).toBeVisible()
-      await expect(this.page.getByRole('button', { name: 'Buscar Pedido' })).toBeVisible()
-    }
+      await page.getByRole('link', { name: 'Consultar Pedido' }).click()
+      
+      await expect(page.getByRole('heading')).toContainText('Consultar Pedido')
+     
+      
+    },
 
     async searchOrder(code: string) {
-        await this.page.getByRole('textbox', { name: 'Número do Pedido' }).fill(code)
-        await this.page.getByRole('button', { name: 'Buscar Pedido' }).click()
-    }
+      await page
+        .getByRole('textbox', { name: 'Número do Pedido' })
+        .fill(code)
+      await page
+        .getByRole('button', { name: 'Buscar Pedido' })
+        .click()
+    },
 
     async validateStatusBadge(status: OrderStatus) {
       const statusClasses = {
         APROVADO: {
           background: 'bg-green-100',
           text: 'text-green-700',
-          icon: 'lucide-circle-check-big'
+          icon: 'lucide-circle-check-big',
         },
         REPROVADO: {
           background: 'bg-red-100',
           text: 'text-red-700',
-          icon: 'lucide-circle-x'
+          icon: 'lucide-circle-x',
         },
         EM_ANALISE: {
           background: 'bg-amber-100',
           text: 'text-amber-700',
-          icon: 'lucide-clock'
-        }
+          icon: 'lucide-clock',
+        },
       } as const
-    
+
       const classes = statusClasses[status]
-      const statusBadge = this.page.getByRole('status').filter({ hasText: status })
-    
+      const statusBadge = page.getByRole('status').filter({ hasText: status })
+
       await expect(statusBadge).toHaveClass(new RegExp(classes.background))
       await expect(statusBadge).toHaveClass(new RegExp(classes.text))
-      await expect(statusBadge.locator('svg')).toHaveClass(new RegExp(classes.icon))
-    }
-    
-    async validateOrderDetais(order: OrderDetails){
-      await expect(this.page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
+      await expect(statusBadge.locator('svg')).toHaveClass(
+        new RegExp(classes.icon),
+      )
+    },
+
+    async validateOrderDetais(order: OrderDetails) {
+      await expect(
+        page.getByTestId(`order-result-${order.number}`),
+      ).toMatchAriaSnapshot(`
         - img
         - paragraph: Pedido
         - paragraph: ${order.number}
@@ -85,15 +97,16 @@ export class OrderLockupPage {
         - heading "Pagamento" [level=4]
         - paragraph: ${order.payment}
         - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
-        `);
-  
-    }
+        `)
+    },
 
-    async validateOrdernotFOund(){
-      await expect(this.page.locator('#root')).toMatchAriaSnapshot(`
+    async validateOrdernotFOund() {
+      await expect(page.locator('#root')).toMatchAriaSnapshot(`
         - img
         - heading "Pedido não encontrado" [level=3]
         - paragraph: Verifique o número do pedido e tente novamente
         `)
-    }
+    },
+  }
 }
+
