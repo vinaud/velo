@@ -101,4 +101,13 @@ test.describe('Consulta de Pedido', () => {
 
     await app.orderLockup.validateOrdernotFOund()
   })
+
+  test('deve manter o botão de busca desabilitado com campo vazio ou apenas espaços', async ({ app, page }) =>{
+    const button = app.orderLockup.elements.searchButton
+    await expect(button).toBeDisabled()
+
+    const orderInput = app.orderLockup.elements.orderInput
+    await orderInput.fill('    ')
+    await expect(button).toBeDisabled()
+  })
 })
