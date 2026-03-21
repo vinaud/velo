@@ -44,4 +44,32 @@ test.describe(' Configuração do Veículo ', () => {
       '/src/assets/glacier-blue-aero-wheels.png',
     )
   })
+
+  test('deve atualizar corretamente o preço do carro ao selecionar ou remover itens opcionais', async ({ app, page }) => {
+    // Arrange
+    await expect(app.configurator.elements.price).toBeVisible()
+    await app.configurator.validateBasePrice()
+
+    // Act + Assert (Precision Park)
+    await app.configurator.toggleOptional(/Precision Park/)
+    await app.configurator.validateTotalPrice('R$ 45.500,00')
+
+    // Act + Assert (Flux Capacitor)
+    await app.configurator.toggleOptional(/Flux Capacitor/)
+    await app.configurator.validateTotalPrice('R$ 50.500,00')
+
+    // Act + Assert (desmarcar ambos opcionais)
+    await app.configurator.toggleOptional(/Precision Park/)
+    await app.configurator.validateTotalPrice('R$ 45.000,00')
+
+    await app.configurator.toggleOptional(/Flux Capacitor/)
+    await app.configurator.validateBasePrice()
+
+    // Act
+    await app.configurator.goToCheckout()
+
+    // Assert
+    await app.configurator.validateCheckoutPage()
+    await expect(page.getByTestId('summary-total-price')).toHaveText('R$ 40.000,00')
+  })
 })
