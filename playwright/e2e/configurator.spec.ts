@@ -45,7 +45,7 @@ test.describe(' Configuração do Veículo ', () => {
     )
   })
 
-  test('deve atualizar corretamente o preço do carro ao selecionar ou remover itens opcionais', async ({ app, page }) => {
+  test('deve atualizar corretamente o preço do carro ao selecionar ou remover itens opcionais', async ({ app }) => {
     // Arrange
     await expect(app.configurator.elements.price).toBeVisible()
     await app.configurator.validateBasePrice()
@@ -66,10 +66,10 @@ test.describe(' Configuração do Veículo ', () => {
     await app.configurator.validateBasePrice()
 
     // Act
-    await app.configurator.goToCheckout()
+    await app.configurator.finishConfigurator()
 
     // Assert
-    await app.configurator.validateCheckoutPage()
-    await expect(page.getByTestId('summary-total-price')).toHaveText('R$ 40.000,00')
+    await app.checkout.expectLoaded()
+    await app.checkout.expectSummaryTotal('R$ 40.000,00')
   })
 })

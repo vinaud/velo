@@ -46,14 +46,8 @@ export function createConfiguratorActions(page: Page) {
       await expect(vehicleImage).toHaveAttribute('src', src)
     },
 
-    async goToCheckout() {
+    async finishConfigurator() {
       await checkoutButton.click()
-    },
-
-    async validateCheckoutPage() {
-      await expect(page).toHaveURL(/\/order$/)
-      await expect(page.getByRole('heading', { name: 'Finalizar Pedido' })).toBeVisible()
-      await expect(page.getByTestId('summary-total-price')).toBeVisible()
     },
   }
 }
