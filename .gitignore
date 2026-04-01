@@ -34,3 +34,7 @@ dist-ssr
 
 playwright-report/index.html
 
+test_output.txt
+test-results.json
+
+.env
