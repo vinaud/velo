@@ -119,4 +119,44 @@ test.describe('Checkout - validações', () => {
         await expect(alerts.terms).toHaveText('Aceite os termos');
 
     });
+
+    test.describe('pagamento e confirmação', () => {
+        test('CT05 - Checkout e Confirmação - Pagamento à Vista (Fluxo Feliz)', async ({ page, app }) => {
+            const customerMassa = {
+                name: 'Fernando',
+                lastname: 'Papito',
+                email: 'fernando.papito@velosprint.com',
+                document: '05366127068',
+                phone: '(11) 99999-9999',
+                store: 'Velô Paulista',
+                paymentMethod: 'avista' as const
+            };
+
+            // Fluxo End-to-End no mesmo teste (sem hook)
+            await page.goto('/');
+
+            // Navegar para o configurador
+            await page.getByTestId('hero-cta-primary').click();
+
+            // Configurar opções padrão (já vêm selecionadas) e finalizar
+            await app.configurator.validateBasePrice();
+            await app.configurator.finishConfigurator();
+            await app.checkout.expectLoaded();
+
+            // Arrange - Checkout
+            await app.checkout.fillCustomerData(customerMassa);
+            await app.checkout.selectStore(customerMassa.store);
+            await app.checkout.selectPaymentMethod(customerMassa.paymentMethod);
+            await app.checkout.expectSummaryTotal('R$ 40.000,00');
+            await app.checkout.acceptTerms();
+
+            // Act
+            await app.checkout.submit();
+
+            // Assert
+            await expect(page).toHaveURL(/\/success/);
+            await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible();
+        });
+
+    });
 });

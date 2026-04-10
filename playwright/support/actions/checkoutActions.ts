@@ -58,6 +58,10 @@ export function createCheckoutActions(page: Page) {
 
     async submit() {
       await page.getByRole('button', { name: 'Confirmar Pedido' }).click()
+    },
+
+    async selectPaymentMethod(method: 'avista' | 'financiamento') {
+      await page.getByTestId(`payment-${method}`).click()
     }
   }
 }
