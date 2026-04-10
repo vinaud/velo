@@ -1,4 +1,5 @@
 import { test, expect } from '../support/fixtures'
+import { deleteOrderByEmail } from '../support/database/orderRepository'
 
 test.describe('Checkout - validações', () => {
 
@@ -132,6 +133,9 @@ test.describe('Checkout - validações', () => {
                 totalPrice: 'R$ 40.000,00',
                 paymentMethod: 'avista' as const
             };
+
+            // Limpar o banco de dados para evitar duplicidade de pedido
+            await deleteOrderByEmail(customerMassa.email);
 
             // Fluxo End-to-End no mesmo teste (sem hook)
             await page.goto('/');
