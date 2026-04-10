@@ -121,7 +121,7 @@ test.describe('Checkout - validações', () => {
     });
 
     test.describe('pagamento e confirmação', () => {
-        test('CT05 - Checkout e Confirmação - Pagamento à Vista (Fluxo Feliz)', async ({ page, app }) => {
+        test('deve criar um pedido com sucesso para pagamento à vista', async ({ page, app }) => {
             const customerMassa = {
                 name: 'Fernando',
                 lastname: 'Papito',
@@ -129,6 +129,7 @@ test.describe('Checkout - validações', () => {
                 document: '05366127068',
                 phone: '(11) 99999-9999',
                 store: 'Velô Paulista',
+                totalPrice: 'R$ 40.000,00',
                 paymentMethod: 'avista' as const
             };
 
@@ -147,7 +148,7 @@ test.describe('Checkout - validações', () => {
             await app.checkout.fillCustomerData(customerMassa);
             await app.checkout.selectStore(customerMassa.store);
             await app.checkout.selectPaymentMethod(customerMassa.paymentMethod);
-            await app.checkout.expectSummaryTotal('R$ 40.000,00');
+            await app.checkout.expectSummaryTotal(customerMassa.totalPrice);
             await app.checkout.acceptTerms();
 
             // Act
