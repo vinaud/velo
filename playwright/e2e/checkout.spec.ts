@@ -163,5 +163,56 @@ test.describe('Checkout - validações', () => {
             await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible();
         });
 
+        test('deve aprovar automaticamente o crédito quando o score do CPF for maior que 700 no financiamento', async ({ page, app }) => {
+            const customer = {
+                name: 'Steve',
+                lastname: 'Woz',
+                email: 'steve.wozniak@velosprint.com',
+                document: '65493881047',
+                phone: '(11) 99999-9999',
+                store: 'Velô Paulista',
+                totalPrice: 'R$ 40.000,00',
+                paymentMethod: 'financiamento' as const
+            };
+
+            // Limpar o banco de dados para evitar duplicidade de pedido
+            await deleteOrderByEmail(customer.email);
+
+            await page.route('**/functions/v1/credit-analysis', async route => await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({
+                    "status": 'Done',
+                    "score": 710,
+                })
+            }));
+
+            // Fluxo End-to-End no mesmo teste (sem hook)
+            await page.goto('/');
+
+            // Navegar para o configurador
+            await page.getByTestId('hero-cta-primary').click();
+
+            // Configurar opções padrão (já vêm selecionadas) e finalizar
+            await app.configurator.validateBasePrice();
+            await app.configurator.finishConfigurator();
+            await app.checkout.expectLoaded();
+
+            // Arrange - Checkout
+            await app.checkout.fillCustomerData(customer);
+            await app.checkout.selectStore(customer.store);
+
+            // Act
+            await app.checkout.selectPaymentMethod(customer.paymentMethod);
+            //await app.checkout.expectSummaryTotal(customer.totalPrice);
+            await app.checkout.acceptTerms();
+
+            await app.checkout.submit();
+
+            // Assert
+            await expect(page).toHaveURL(/\/success/);
+            await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible();
+        });
+
     });
 });
