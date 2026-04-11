@@ -1,1 +1,4 @@
-project_id = "cojxxkatfimgnimdmbpj"
+project_id = "ylhtbnzypxtmlvvhbtyo"
+
+[functions.credit-analysis]
+verify_jwt = false

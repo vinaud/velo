@@ -1458,10 +1458,10 @@ acorn@^8.15.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.15.0.tgz#a360898bc415edaac46c8241f6383975b930b816"
   integrity sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==
 
-agent-base@^7.1.2:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-7.1.4.tgz#e3cd76d4c548ee895d3c3fd8dc1f6c5b9032e7a8"
-  integrity sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==
+agent-base@9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-9.0.0.tgz#ec9efb08314e1e75b0852d74aabf9a387f99834e"
+  integrity sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==
 
 ajv@^6.12.4:
   version "6.12.6"
@@ -1772,7 +1772,7 @@ date-fns@^3.6.0:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-3.6.0.tgz#f20ca4fe94f8b754951b24240676e8618c0206bf"
   integrity sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==
 
-debug@4, debug@^4.3.1, debug@^4.3.2, debug@^4.4.3:
+debug@^4.3.1, debug@^4.3.2, debug@^4.3.4, debug@^4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.4.3.tgz#c6ae432d9bd9662582fce08709b038c58e9e3d6a"
   integrity sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==
@@ -2139,13 +2139,13 @@ hasown@^2.0.2:
   dependencies:
     function-bind "^1.1.2"
 
-https-proxy-agent@^7.0.2:
-  version "7.0.6"
-  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-7.0.6.tgz#da8dfeac7da130b05c2ba4b59c9b6cd66611a6b9"
-  integrity sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==
+https-proxy-agent@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-9.0.0.tgz#89256adf9dc20926fe43ea1d3ca0feb9e23cc4bd"
+  integrity sha512-/MVmHp58WkOypgFhCLk4fzpPcFQvTJ/e6LBI7irpIO2HfxUbpmYoHF+KzipzJpxxzJu7aJNWQ0xojJ/dzV2G5g==
   dependencies:
-    agent-base "^7.1.2"
-    debug "4"
+    agent-base "9.0.0"
+    debug "^4.3.4"
 
 iceberg-js@^0.8.1:
   version "0.8.1"
@@ -2951,15 +2951,15 @@ sucrase@^3.35.0:
     tinyglobby "^0.2.11"
     ts-interface-checker "^0.1.9"
 
-supabase@^2.70.4:
-  version "2.76.9"
-  resolved "https://registry.yarnpkg.com/supabase/-/supabase-2.76.9.tgz#79b1d1f78e80b54f71ddce67078f89b577573860"
-  integrity sha512-BHQ9kSetU7QUm9eLUzGtzlIvkktVnQZ8ypar8Bck9PQZdRE/ugXLLHBg/qqlWTxYRS7QV7Vn/rGLVhWclVMm+g==
+supabase@^2.89.1:
+  version "2.89.1"
+  resolved "https://registry.yarnpkg.com/supabase/-/supabase-2.89.1.tgz#0d233be41b4069f508af91b2d07c1c6247b05132"
+  integrity sha512-OsT1kIC2YutgSj4iy+CD0jRkfxlULB5K48uCxGTMNXcnX4IEQ9gVrQ05QQDuBkX1uVEH6E6itrs3HjQs5u/uVw==
   dependencies:
     bin-links "^6.0.0"
-    https-proxy-agent "^7.0.2"
+    https-proxy-agent "^9.0.0"
     node-fetch "^3.3.2"
-    tar "7.5.7"
+    tar "7.5.13"
 
 supports-color@^7.1.0:
   version "7.2.0"
@@ -3011,10 +3011,10 @@ tailwindcss@^3.4.17:
     resolve "^1.22.8"
     sucrase "^3.35.0"
 
-tar@7.5.7:
-  version "7.5.7"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-7.5.7.tgz#adf99774008ba1c89819f15dbd6019c630539405"
-  integrity sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==
+tar@7.5.13:
+  version "7.5.13"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-7.5.13.tgz#0d214ed56781a26edc313581c0e2d929ceeb866d"
+  integrity sha512-tOG/7GyXpFevhXVh8jOPJrmtRpOTsYqUIkVdVooZYJS/z8WhfQUX8RJILmeuJNinGAMSu1veBr4asSHFt5/hng==
   dependencies:
     "@isaacs/fs-minipass" "^4.0.0"
     chownr "^3.0.0"

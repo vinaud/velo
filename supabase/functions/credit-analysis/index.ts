@@ -5,15 +5,43 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// URL da API de análise de crédito - configurável via variável de ambiente
-const API_CREDIT_ANALYSIS_URL = Deno.env.get('API_CREDIT_ANALYSIS_URL') || 
+const API_CREDIT_ANALYSIS_URL = Deno.env.get('API_CREDIT_ANALYSIS_URL') ||
   'https://uat-api.serasaexperian.com.br/consultas/v1/relato';
+const API_CREDIT_ANALYSIS_TOKEN = Deno.env.get('API_CREDIT_ANALYSIS_TOKEN')?.trim();
+const API_CREDIT_ANALYSIS_AUTH_HEADER = Deno.env.get('API_CREDIT_ANALYSIS_AUTH_HEADER')?.trim() || 'Authorization';
+const API_CREDIT_ANALYSIS_AUTH_SCHEME = Deno.env.get('API_CREDIT_ANALYSIS_AUTH_SCHEME')?.trim() || 'Bearer';
+const USE_MOCK_CREDIT_ANALYSIS = Deno.env.get('USE_MOCK_CREDIT_ANALYSIS') === 'true';
 
-// Gera token aleatório para simulação de autenticação
-function generateRandomToken(): string {
-  const array = new Uint8Array(32);
-  crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+function createJsonResponse(body: Record<string, unknown>, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+}
+
+function getCreditAnalysisResult() {
+  return {
+    status: 'Done',
+    score: 420,
+  };
+}
+
+function buildExternalHeaders(): HeadersInit {
+  if (!API_CREDIT_ANALYSIS_TOKEN) {
+    return {
+      'Content-Type': 'application/json',
+    };
+  }
+
+  const shouldFormatAsAuthorization = API_CREDIT_ANALYSIS_AUTH_HEADER.toLowerCase() === 'authorization';
+  const authValue = shouldFormatAsAuthorization && API_CREDIT_ANALYSIS_AUTH_SCHEME
+    ? `${API_CREDIT_ANALYSIS_AUTH_SCHEME} ${API_CREDIT_ANALYSIS_TOKEN}`
+    : API_CREDIT_ANALYSIS_TOKEN;
+
+  return {
+    'Content-Type': 'application/json',
+    [API_CREDIT_ANALYSIS_AUTH_HEADER]: authValue,
+  };
 }
 
 serve(async (req) => {
@@ -26,30 +54,29 @@ serve(async (req) => {
     const { cpf } = await req.json();
 
     if (!cpf) {
-      return new Response(
-        JSON.stringify({ error: 'CPF é obrigatório' }),
-        { 
-          status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+      return createJsonResponse({ error: 'CPF é obrigatório' }, 400);
     }
 
     // Remove máscara do CPF
     const cpfClean = cpf.replace(/\D/g, '');
+    if (!/^\d{11}$/.test(cpfClean)) {
+      return createJsonResponse({ error: 'CPF inválido' }, 400);
+    }
 
-    // Gera token dinâmico
-    const authToken = generateRandomToken();
+    const shouldUseMock = USE_MOCK_CREDIT_ANALYSIS || !API_CREDIT_ANALYSIS_TOKEN;
 
-    console.log(`Calling credit analysis API for CPF: ${cpfClean.substring(0, 3)}***`);
+    console.log(
+      `Running credit analysis for CPF: ${cpfClean.substring(0, 3)}*** (${shouldUseMock ? 'mock' : 'external'})`
+    );
+
+    if (shouldUseMock) {
+      return createJsonResponse(getCreditAnalysisResult());
+    }
 
     // Requisição para API real
     const response = await fetch(API_CREDIT_ANALYSIS_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`,
-      },
+      headers: buildExternalHeaders(),
       body: JSON.stringify({
         documento: cpfClean,
         tipo_documento: 'CPF',
@@ -60,53 +87,45 @@ serve(async (req) => {
       }),
     });
 
-    if (!response.ok) {
-      console.error(`Credit API error: ${response.status} ${response.statusText}`);
-      return new Response(
-        JSON.stringify({ error: 'Erro na consulta de crédito' }),
-        { 
-          status: 502, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
-    }
+    const data = await response.json().catch(() => null);
 
-    const data = await response.json();
+    if (!response.ok) {
+      console.error('Credit API error:', response.status, response.statusText, data);
+      return createJsonResponse({ error: 'Erro na consulta de crédito' }, 502);
+    }
 
     // Valida resposta
-    if (typeof data.score !== 'number') {
+    const score =
+      typeof data === 'object' &&
+      data !== null &&
+      'score' in data &&
+      typeof data.score === 'number'
+        ? data.score
+        : null;
+
+    if (score === null) {
       console.error('Invalid response from credit API: missing score field');
-      return new Response(
-        JSON.stringify({ error: 'Resposta inválida da API de crédito' }),
-        { 
-          status: 502, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-        }
-      );
+      return createJsonResponse({ error: 'Resposta inválida da API de crédito' }, 502);
     }
 
-    console.log(`Credit analysis completed. Score: ${data.score}`);
+    const status =
+      typeof data === 'object' &&
+      data !== null &&
+      'status' in data &&
+      typeof data.status === 'string'
+        ? data.status
+        : 'Done';
 
-    return new Response(
-      JSON.stringify({ 
-        status: data.status || 'Done',
-        score: data.score 
-      }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
-    );
+    console.log(`Credit analysis completed. Score: ${score}`);
+
+    return createJsonResponse({
+      status,
+      score,
+    });
 
   } catch (error) {
     console.error('Credit analysis error:', error);
-    
-    // Timeout ou falha de rede
-    return new Response(
-      JSON.stringify({ error: 'Falha na comunicação com serviço de crédito' }),
-      { 
-        status: 503, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
-    );
+
+    return createJsonResponse({ error: 'Falha na comunicação com serviço de crédito' }, 503);
   }
 });
