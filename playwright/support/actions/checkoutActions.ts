@@ -52,6 +52,10 @@ export function createCheckoutActions(page: Page) {
       await page.getByRole('option', { name: storeName }).click()
     },
 
+    async fillDownPayment(value: string) {
+      await page.getByTestId('input-entry-value').fill(value)
+    },
+
     async acceptTerms() {
       await terms.check()
     },
