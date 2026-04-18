@@ -22,6 +22,11 @@ export function createConfiguratorActions(page: Page) {
       )
     },
 
+    async openFromHome() {
+      await page.goto('/')
+      await page.getByTestId('hero-cta-primary').click()
+    },
+
     async selectColor(name: string) {
       await page.getByRole('button', { name }).click()
     },
