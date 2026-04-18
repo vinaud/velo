@@ -214,5 +214,55 @@ test.describe('Checkout - validações', () => {
             await expect(page.getByRole('heading', { name: 'Pedido Aprovado!' })).toBeVisible();
         });
 
+        test('deve enviar um pedido para análise quando o score do CPF for entre 501 e 700 no financiamento', async ({ page, app }) => {
+            const customer = {
+                name: 'Maria',
+                lastname: 'Silva',
+                email: 'maria.silva@velosprint.com',
+                document: '74690251037',
+                phone: '(11) 98888-8888',
+                store: 'Velô Paulista',
+                totalPrice: 'R$ 40.000,00',
+                paymentMethod: 'financiamento' as const
+            };
+
+            // Limpar o banco de dados para evitar duplicidade de pedido
+            await deleteOrderByEmail(customer.email);
+
+            await page.route('**/functions/v1/credit-analysis', async route => await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({
+                    "status": 'Done',
+                    "score": 600,
+                })
+            }));
+
+            // Fluxo End-to-End no mesmo teste (sem hook)
+            await page.goto('/');
+
+            // Navegar para o configurador
+            await page.getByTestId('hero-cta-primary').click();
+
+            // Configurar opções padrão (já vêm selecionadas) e finalizar
+            await app.configurator.validateBasePrice();
+            await app.configurator.finishConfigurator();
+            await app.checkout.expectLoaded();
+
+            // Arrange - Checkout
+            await app.checkout.fillCustomerData(customer);
+            await app.checkout.selectStore(customer.store);
+
+            // Act
+            await app.checkout.selectPaymentMethod(customer.paymentMethod);
+            await app.checkout.acceptTerms();
+
+            await app.checkout.submit();
+
+            // Assert
+            await expect(page).toHaveURL(/\/success/);
+            await expect(page.getByRole('heading', { name: 'Pedido em Análise!' })).toBeVisible();
+        });
+
     });
 });
