@@ -68,32 +68,9 @@ export function createCheckoutActions(page: Page) {
       await page.getByTestId(`payment-${method}`).click()
     },
 
-    async mockCreditAnalysis(score: number) {
-      await page.route('**/functions/v1/credit-analysis', async route => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            status: 'Done',
-            score: score,
-          }),
-        })
-      })
-    },
-
-    async expectOrderApproved() {
+    async expectResult(status: string) {
       await expect(page).toHaveURL(/\/success/)
-      await expect(page.getByRole('heading', { name: /Pedido Aprovado/i })).toBeVisible()
-    },
-
-    async expectOrderInAnalysis() {
-      await expect(page).toHaveURL(/\/success/)
-      await expect(page.getByRole('heading', { name: /Pedido em Análise/i })).toBeVisible()
-    },
-
-    async expectOrderRejected() {
-      await expect(page).toHaveURL(/\/success/)
-      await expect(page.getByRole('heading', { name: /Crédito Reprovado/i })).toBeVisible()
+      await expect(page.getByRole('heading', { name: status })).toBeVisible()
     }
   }
 }
