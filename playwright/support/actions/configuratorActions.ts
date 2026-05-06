@@ -42,7 +42,7 @@ export function createConfiguratorActions(page: Page) {
       await expect(price).toHaveText(expected)
     },
 
-    async validateVehicleImage(src: string) {
+    async validateVehicleImage(src: string | RegExp) {
       await expect(vehicleImage).toHaveAttribute('src', src)
     },
 

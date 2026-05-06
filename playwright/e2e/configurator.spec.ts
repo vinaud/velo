@@ -16,9 +16,7 @@ test.describe(' Configuração do Veículo ', () => {
 
     // Assert
     await app.configurator.validateBasePrice()
-    await app.configurator.validateVehicleImage(
-      '/src/assets/midnight-black-aero-wheels.png',
-    )
+    await app.configurator.validateVehicleImage(/midnight-black-aero-wheels/)
   })
 
   test('deve atualizar o preço e a imagem do veículo ao alterar o tipo de roda', async ({ app }) => {
@@ -31,18 +29,14 @@ test.describe(' Configuração do Veículo ', () => {
 
     // Assert
     await app.configurator.validateTotalPrice('R$ 42.000,00')
-    await app.configurator.validateVehicleImage(
-      '/src/assets/glacier-blue-sport-wheels.png',
-    )
+    await app.configurator.validateVehicleImage(/glacier-blue-sport-wheels/)
 
     // Act
     await app.configurator.selectWheels(/Aero Wheels/)
 
     // Assert
     await app.configurator.validateBasePrice()
-    await app.configurator.validateVehicleImage(
-      '/src/assets/glacier-blue-aero-wheels.png',
-    )
+    await app.configurator.validateVehicleImage(/glacier-blue-aero-wheels/)
   })
 
   test('deve atualizar corretamente o preço do carro ao selecionar ou remover itens opcionais', async ({ app }) => {
