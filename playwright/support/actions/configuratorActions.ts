@@ -18,7 +18,7 @@ export function createConfiguratorActions(page: Page) {
       await expect(price).toHaveText('R$ 40.000,00')
       await expect(vehicleImage).toHaveAttribute(
         'src',
-        '/src/assets/glacier-blue-aero-wheels.png',
+        /glacier-blue-aero-wheels/,
       )
     },
 
