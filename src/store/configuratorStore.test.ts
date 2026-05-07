@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateTotalPrice, calculateInstallment, formatPrice, CarConfiguration } from './configuratorStore';
+import { calculateTotalPrice, calculateInstallment, formatPrice, CarConfiguration, useConfiguratorStore } from './configuratorStore';
 
 describe('configuratorStore pure functions', () => {
   describe('calculateTotalPrice', () => {
@@ -32,7 +32,7 @@ describe('configuratorStore pure functions', () => {
       };
       expect(calculateTotalPrice(config)).toBe(50500); // 40000 + 5500 + 5000
     });
-    
+
     it('should calculate price with sport wheels and optionals', () => {
       const config: CarConfiguration = {
         exteriorColor: 'glacier-blue',
@@ -61,3 +61,51 @@ describe('configuratorStore pure functions', () => {
     });
   });
 });
+
+describe('configuratorStore actions', () => {
+  it('should toggle an optional feature correctly', () => {
+    // Reset state before test
+    useConfiguratorStore.getState().resetConfiguration()
+
+    // Initial state has no optionals
+    expect(useConfiguratorStore.getState().configuration.optionals).toEqual([])
+
+    // Toggle a feature (should add it)
+    useConfiguratorStore.getState().toggleOptional('precision-park')
+    expect(useConfiguratorStore.getState().configuration.optionals).toContain('precision-park')
+
+    // Toggle the same feature (should remove it)
+    useConfiguratorStore.getState().toggleOptional('precision-park')
+    expect(useConfiguratorStore.getState().configuration.optionals).not.toContain('precision-park')
+  })
+
+  it('should handle login logic depending on previous orders', () => {
+    useConfiguratorStore.setState({ orders: [] })
+    useConfiguratorStore.getState().logout()
+
+    // Login fails if there are no orders for the email
+    const loginResult1 = useConfiguratorStore.getState().login('test@example.com')
+    expect(loginResult1).toBe(false)
+    expect(useConfiguratorStore.getState().currentUserEmail).toBeNull()
+
+    // Add a mock order
+    useConfiguratorStore.setState({
+      orders: [
+        {
+          id: '1',
+          configuration: { exteriorColor: 'glacier-blue', interiorColor: 'carbon-black', wheelType: 'aero', optionals: [] },
+          totalPrice: 40000,
+          customer: { name: 'Test', surname: 'User', email: 'test@example.com', phone: '', cpf: '', store: '' },
+          paymentMethod: 'avista',
+          status: 'APROVADO',
+          createdAt: new Date().toISOString()
+        }
+      ]
+    })
+
+    // Login succeeds now
+    const loginResult2 = useConfiguratorStore.getState().login('test@example.com')
+    expect(loginResult2).toBe(true)
+    expect(useConfiguratorStore.getState().currentUserEmail).toBe('test@example.com')
+  })
+})
