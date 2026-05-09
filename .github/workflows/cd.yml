@@ -129,10 +129,10 @@ jobs:
 
   promote: 
     name: Promote to Production
-    needs: [e2e-tests]
+    needs: [build-and-deploy, e2e-tests]
     runs-on: ubuntu-latest
 
     steps: 
       - name: Vercel Promote
-        run: yarn vercel promote ${{ needs.build-and-deploy.outputs.deployment-url }} --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE --yes
+        run: npx vercel@latest promote ${{ needs.build-and-deploy.outputs.deployment-url }} --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE --yes
    
