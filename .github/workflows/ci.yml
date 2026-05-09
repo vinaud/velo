@@ -78,4 +78,4 @@ jobs:
       
       # Deploy previe para o Vercel
       - name: Deploy Preview
-        run: yarn vercel deploy --prebuild --target=preview --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE
+        run: yarn vercel deploy --prebuilt --target=preview --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE
