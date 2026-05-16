@@ -135,7 +135,7 @@ jobs:
       - name: Publish Testdino Report
         if: ${{ !cancelled() }}
         run: npx tdpw upload ./playwright-report --token=${{ secrets.TD_TOKEN }}
-
+  #Promote to production
   promote:
     name: Promote to Production
     needs: [build-and-deploy, e2e-tests]
